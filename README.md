@@ -18,6 +18,16 @@ AI CreatorHub connects brands with independent AI creators. Brands can publish c
 
 The app can serve its pages even if MongoDB is offline, but registration, profile, brief, and project APIs need a working database. The AI generator needs `OMNIROUTE_API_KEY`. The key stays in the backend environment and is never sent to browser code.
 
+## Deploy to Render
+
+1. Create a MongoDB Atlas database, database user, and network access rule for your Render service.
+2. In Render, choose **New + → Blueprint** and connect this GitHub repository.
+3. Render reads `render.yaml` and creates the web service. Set `MONGODB_URI` to your Atlas connection string when prompted; Render generates `JWT_SECRET`.
+4. After deployment, open the service URL and check `/api/health`. The database status should be `connected`.
+5. To enable AI generation, set `OMNIROUTE_API_KEY` in the Render service's environment settings and redeploy.
+
+The Blueprint deploys the Express backend and serves the frontend from the same service, so frontend `/api/...` requests work without a separate API URL.
+
 ## OmniRoute configuration
 
 The backend service in `backend/services/omniRouteService.js` uses an OpenAI-compatible chat-completions request. Configure `OMNIROUTE_BASE_URL`, `OMNIROUTE_API_KEY`, and `OMNIROUTE_MODEL` in `backend/.env`. Changing the provider later is isolated to this service; frontend pages call only `/api/ai/generate`.
